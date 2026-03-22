@@ -14,3 +14,8 @@ export async function runSearch(data) {
 
   return await response.json()
 }
+
+export async function getGraph() {
+  const response = await fetch("http://127.0.0.1:8000/api/graph")
+  return await response.json()
+}
