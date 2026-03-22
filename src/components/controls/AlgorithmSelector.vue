@@ -1,6 +1,6 @@
 <template>
 
-<div>
+<div class="algorithm-selector">
 
 <label>
 <input type="radio" value="ucs" v-model="algorithm">
@@ -31,3 +31,12 @@ A*
 const algorithm = defineModel()
 
 </script>
+
+<style scoped>
+.algorithm-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+</style>
