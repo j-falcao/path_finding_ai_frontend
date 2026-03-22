@@ -25,18 +25,13 @@
 </template>
 
 <script setup>
-
-import { ref } from "vue"
-import { runSearch } from "../services/searchService"
+import { ref, onMounted } from "vue"
+import { getGraph, runSearch } from "../services/api"
 import ControlPanel from "../components/controls/ControlPanel.vue"
 import GraphView from "../components/graph/GraphView.vue"
 import SearchResults from "../components/results/SearchResults.vue"
 
-const cities = [
-  { data: { id: "Lisboa" } },
-  { data: { id: "Porto" } },
-  { data: { source: "Lisboa", target: "Porto", weight: 300 } }
-]
+const cities = ref({})
 
 const startCity = ref(null)
 const goalCity = ref(null)
@@ -45,26 +40,30 @@ const algorithm = ref("ucs")
 const result = ref({})
 const path = ref([])
 
-async function handleSearch() {
-
+onMounted(async () => {
   try {
+    cities.value = await getGraph()
+  } catch (err) {
+    console.error(err)
+  }
+})
 
+async function handleSearch() {
+  console.log(startCity.value, goalCity.value, algorithm.value)
+  try {
     const response = await runSearch({
       start: startCity.value,
       goal: goalCity.value,
       algorithm: algorithm.value
     })
-
     result.value = response
     path.value = response.path
-
   } catch (err) {
     console.error(err)
   }
-
 }
-
 </script>
+
 
 <style scoped>
 
@@ -80,7 +79,7 @@ async function handleSearch() {
 }
 
 .graph {
-  flex: 5;
+  flex: 4;
 }
 
 .results {

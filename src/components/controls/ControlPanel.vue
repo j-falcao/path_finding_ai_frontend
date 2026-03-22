@@ -4,11 +4,11 @@
     <div class="select-group">
       <div class="select-field">
         <label>Start City</label>
-        <Select v-model="startCity" :options="cities.keys" placeholder="Select a City" />
+        <Select v-model="startCity" :options="labels" option-label="label" option-value="value" placeholder="Select a City" />
       </div>
       <div class="select-field">
         <label>Goal City</label>
-        <Select v-model="goalCity" :options="cities.keys" placeholder="Select a City" />
+        <Select v-model="goalCity" :options="labels" option-label="label" option-value="value" placeholder="Select a City" />
       </div>
     </div>
 
@@ -21,11 +21,13 @@
 </template>
 
 <script setup>
+import { ref, watch } from 'vue'
 import Select from 'primevue/select'
 import AlgorithmSelector from './AlgorithmSelector.vue'
 
+const labels = ref([])
 
-defineProps({
+const props = defineProps({
   cities: {
     type: Object,
     required: true,
@@ -37,6 +39,20 @@ const emit = defineEmits(['run-search'])
 const startCity = defineModel('startCity')
 const goalCity = defineModel('goalCity')
 const algorithm = defineModel('algorithm')
+
+
+watch(
+  () => props.cities,
+  (newCities) => {
+    if (!newCities || !newCities.nodes?.length) return
+
+    labels.value = newCities.nodes.map(n => ({
+      label: n.data.label,
+      value: n.data.id
+    }))
+  }
+)
+
 </script>
 
 <style scoped>

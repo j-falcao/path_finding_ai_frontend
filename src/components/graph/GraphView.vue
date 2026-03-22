@@ -1,15 +1,13 @@
 <template>
   <div ref="cyContainer" class="graph"></div>
 </template>
-
 <script setup>
-
-import { ref, onMounted } from "vue"
+import { ref, watch } from "vue"
 import cytoscape from "cytoscape"
 
 const props = defineProps({
   cities: {
-    type: Array,
+    type: Object,
     required: true
   },
   path: {
@@ -21,40 +19,46 @@ const props = defineProps({
 const cyContainer = ref(null)
 let cy = null
 
-onMounted(() => {
+watch(
+  () => props.cities,
+  (newCities) => {
+    if (!newCities || !newCities.nodes?.length) return
 
-  cy = cytoscape({
-    container: cyContainer.value,
-
-    elements: props.cities,
-
-    style: [
-      {
-        selector: "node",
-        style: {
-          label: "data(id)",
-          "text-valign": "center",
-          "text-halign": "center"
-        }
-      },
-      {
-        selector: "edge",
-        style: {
-          width: 2,
-          "line-color": "#999",
-          "target-arrow-shape": "triangle"
-        }
-      }
-    ],
-
-    layout: {
-      name: "grid"
+    // destroy previous instance if it exists
+    if (cy) {
+      cy.destroy()
+      cy = null
     }
-  })
 
-})
-
+    cy = cytoscape({
+      container: cyContainer.value,
+      elements: newCities,
+      style: [
+        {
+          selector: "node",
+          style: {
+            label: "data(label)",
+            "text-valign": "center",
+            "text-halign": "center"
+          }
+        },
+        {
+          selector: "edge",
+          style: {
+            width: 2,
+            "line-color": "#999",
+            "target-arrow-shape": "triangle",
+            label: "data(weight)"
+          }
+        }
+      ],
+      layout: { name: "grid" }
+    })
+  },
+  { immediate: true, flush: "post" }
+)
 </script>
+
 
 <style scoped>
 
