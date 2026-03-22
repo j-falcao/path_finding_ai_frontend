@@ -10,6 +10,9 @@ export default defineConfig([
   {
     name: 'app/files-to-lint',
     files: ['**/*.{vue,js,mjs,jsx}'],
+    rules: {
+      'no-unused-vars': 'warn',
+    }
   },
 
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
