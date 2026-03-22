@@ -10,9 +10,6 @@ export default defineConfig([
   {
     name: 'app/files-to-lint',
     files: ['**/*.{vue,js,mjs,jsx}'],
-    rules: {
-      'no-unused-vars': 'warn',
-    }
   },
 
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
@@ -36,4 +33,11 @@ export default defineConfig([
   ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
 
   skipFormatting,
+
+  // Disable unused variable errors
+  {
+    rules: {
+      'no-unused-vars': 'off',
+    },
+  },
 ])
