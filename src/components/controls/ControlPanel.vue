@@ -14,7 +14,28 @@
 
 
     <h4>Algorithm</h4>
-    <AlgorithmSelector v-model="algorithm" />
+    <div class="algorithm-selector">
+      <label>
+      <input type="radio" value="ucs" v-model="algorithm">
+      Uniform Cost
+      </label>
+
+      <label>
+      <input type="radio" value="dls" v-model="algorithm">
+      Depth Limited
+      </label>
+
+      <label>
+      <input type="radio" value="greedy" v-model="algorithm">
+      Greedy
+      </label>
+
+      <label>
+      <input type="radio" value="astar" v-model="algorithm">
+      A*
+      </label>
+
+    </div>
 
     <button @click="emit('run-search')">Run Search</button>
   </div>
@@ -23,7 +44,6 @@
 <script setup>
 import { ref, watch } from 'vue'
 import Select from 'primevue/select'
-import AlgorithmSelector from './AlgorithmSelector.vue'
 
 const labels = ref([])
 
@@ -66,5 +86,11 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+.algorithm-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 </style>
