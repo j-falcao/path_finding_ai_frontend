@@ -13,7 +13,12 @@
   </div>
 
   <div class="graph">
-    <GraphView :cities="cities" :path="path" />
+    <GraphView
+      :cities="cities"
+      :path="path"
+      :startCity="startCity"
+      :goalCity="goalCity"
+    />
   </div>
 
   <div class="results">
