@@ -14,8 +14,10 @@
 nav {
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
+  align-items: center;
+  padding: 0 1rem;
   border-bottom: 1px solid #ccc;
+  height: 60px;
 }
 .pages {
   display: flex;
