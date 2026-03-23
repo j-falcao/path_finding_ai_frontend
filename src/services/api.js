@@ -1,6 +1,6 @@
 export async function runSearch(data) {
 
-  const response = await fetch("/api/search", {
+  const response = await fetch("http://127.0.0.1:8000/api/search", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -8,6 +8,7 @@ export async function runSearch(data) {
     body: JSON.stringify(data)
   })
 
+  console.log(response)
   if (!response.ok) {
     throw new Error("Search failed")
   }
@@ -17,5 +18,6 @@ export async function runSearch(data) {
 
 export async function getGraph() {
   const response = await fetch("http://127.0.0.1:8000/api/graph")
-  return await response.json()
+  if (!response.ok) throw new Error("Failed to fetch graph")
+  return response.json() // already cytoscape elements
 }
