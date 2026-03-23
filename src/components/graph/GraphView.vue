@@ -7,7 +7,7 @@ import { ref, watch } from "vue"
 import cytoscape from "cytoscape"
 
 const props = defineProps({
-  cities: {
+  elements: {
     type: Object,
     required: true
   },
@@ -29,9 +29,9 @@ const cyContainer = ref(null)
 let cy = null
 
 watch(
-  () => props.cities,
-  (newCities) => {
-    if (!newCities || !newCities.nodes?.length) return
+  () => props.elements,
+  (newElements) => {
+    if (!newElements || !newElements.elements?.length) return
 
     if (cy) {
       cy.destroy()
@@ -40,7 +40,7 @@ watch(
 
     cy = cytoscape({
       container: cyContainer.value,
-      elements: newCities,
+      elements: newElements.elements,
       style: [
         {
           selector: "node",
@@ -77,7 +77,6 @@ watch(
             width: 2,
             "line-color": "#999",
             "target-arrow-color": "#999",
-            "target-arrow-shape": "triangle",
             label: "data(weight)",
             "curve-style": "bezier"
           }
@@ -149,6 +148,7 @@ function applyPathStyles() {
     const from = path[i]
     const to = path[i + 1]
     cy.edges(`[source="${from}"][target="${to}"]`).addClass("on-path")
+    cy.edges(`[source="${to}"][target="${from}"]`).addClass("on-path")
   }
 }
 </script>
@@ -156,7 +156,6 @@ function applyPathStyles() {
 <style scoped>
 .graph {
   width: 100%;
-  height: 500px;
-  border: 1px solid #ccc;
+  height: 100%;
 }
 </style>
