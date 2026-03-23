@@ -2,15 +2,12 @@
 
 <div>
 
-<h3>Results</h3>
+<h4>Results</h4>
+<p>Status: {{result.status ?? "N/A"}}</p>
 
 <p>Algorithm: {{result.algorithm ?? "N/A"}}</p>
 
-<p>Distance: {{result.distance ?? "N/A"}}</p>
-
-<ul v-if="result.cities">
-<li v-for="city in result.cities" :key="city">{{city}}</li>
-</ul>
+<p>Distance: {{result.cost ?? "N/A"}}</p>
 
 </div>
 
