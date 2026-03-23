@@ -9,6 +9,8 @@
 
 <p>Distance: {{result.cost ?? "N/A"}}</p>
 
+<p>Path: {{result.path ?? "N/A"}}</p>
+
 </div>
 
 </template>
