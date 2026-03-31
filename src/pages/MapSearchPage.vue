@@ -10,7 +10,7 @@
       v-model:algorithm="algorithm"
       @run-search="handleSearch"
     />
-    <SearchResults v-if="result.keys" :result="result" />
+    <SearchResults :result="result" />
   </div>
 
   <div class="graph">

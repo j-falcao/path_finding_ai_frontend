@@ -5,8 +5,6 @@
 <h4>Results</h4>
 <p>Status: {{result.status ?? "N/A"}}</p>
 
-<p>Algorithm: {{result.algorithm ?? "N/A"}}</p>
-
 <p>Distance: {{result.cost ?? "N/A"}}</p>
 
 <p>Path: {{result.path ?? "N/A"}}</p>
