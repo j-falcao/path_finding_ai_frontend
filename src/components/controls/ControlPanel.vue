@@ -36,11 +36,13 @@
         Uniform Cost
       </label>
 
-      <label>
-        <input type="radio" value="dls" v-model="algorithm" />
-        Depth Limited
-      </label>
-
+      <div class="dls-selector">
+        <label>
+          <input type="radio" value="dls" v-model="algorithm" />
+          Depth Limited
+        </label>
+        <InputNumber v-model="depth" class="depth-input" :class="{invalid: depthInvalid}" :disabled="algorithm!='dls'" inputId="minmax-buttons" mode="decimal" showButtons :min="1" fluid />
+      </div>
       <label>
         <input type="radio" value="greedy" v-model="algorithm" />
         Greedy
@@ -60,6 +62,7 @@
 import { ref, watch, computed } from 'vue'
 import Select from 'primevue/select'
 import Button from 'primevue/button'
+import InputNumber from 'primevue/inputnumber'
 
 const labels = ref([])
 const submitted = ref(false)
@@ -76,7 +79,9 @@ const emit = defineEmits(['run-search'])
 const startCity = defineModel('startCity')
 const goalCity = defineModel('goalCity')
 const algorithm = defineModel('algorithm')
+const depth = defineModel('depth')
 
+const depthInvalid = computed(() => submitted.value && algorithm.value === 'dls' && !depth.value)
 const startInvalid = computed(() => submitted.value && !startCity.value)
 const goalInvalid = computed(() => submitted.value && !goalCity.value)
 const sameCity = computed(() =>
@@ -89,7 +94,7 @@ const sameCity = computed(() =>
 function runSearch() {
   submitted.value = true
 
-  if (!startCity.value || !goalCity.value || startCity.value === goalCity.value) {
+  if (!startCity.value || !goalCity.value || startCity.value === goalCity.value || (algorithm.value === 'dls' && !depth.value)) {
     return
   }
 
@@ -127,10 +132,20 @@ watch(
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
+.dls-selector {
+  display: flex;
+  align-items: center;
+}
+.depth-input {
+  width: 120px;
+  margin-left: 1rem;
+}
+.invalid :deep(.p-inputnumber-input) {
+  border-color: #e53935;
+}
 .invalid :deep(.p-select) {
   border-color: #e53935;
 }
-
 .invalid :deep(.p-select-label) {
   color: #e53935;
 }

@@ -8,6 +8,7 @@
       v-model:startCity="startCity"
       v-model:goalCity="goalCity"
       v-model:algorithm="algorithm"
+      v-model:depth="depth"
       @run-search="handleSearch"
     />
     <SearchResults :result="result" />
@@ -38,6 +39,7 @@ const cy_elements = ref({})
 const startCity = ref(null)
 const goalCity = ref(null)
 const algorithm = ref("ucs")
+const depth = ref(10)
 
 const result = ref({})
 const path = ref([])
@@ -56,7 +58,8 @@ async function handleSearch() {
       map_json: cy_elements.value,
       start: startCity.value,
       goal: goalCity.value,
-      algorithm: algorithm.value
+      algorithm: algorithm.value,
+      depth: depth.value
     })
     result.value = response
     path.value = response.path
