@@ -25,6 +25,13 @@ import { getGraph, runSearch } from '../services/api'
 import ControlPanel from '../components/controls/ControlPanel.vue'
 import GraphView from '../components/graph/GraphView.vue'
 import SearchResults from '../components/results/SearchResults.vue'
+import { useAuthStore } from '../stores/auth'
+import { useToast } from 'primevue/usetoast'
+
+const toast = useToast()
+
+
+const auth = useAuthStore()
 
 const cy_elements = ref({})
 
@@ -45,6 +52,15 @@ onMounted(async () => {
 })
 
 async function handleSearch() {
+if (!auth.isLoggedIn) {
+  toast.add({
+    severity: 'warn',
+    summary: 'Not logged in',
+    detail: 'Please upload a license plate first',
+    life: 3000
+  })
+  return
+}
   try {
     const response = await runSearch({
       map_json: cy_elements.value,
@@ -69,7 +85,6 @@ function handleLoadGraph(newGraph) {
   path.value = []
   result.value = {}
 }
-
 </script>
 
 <style scoped>
