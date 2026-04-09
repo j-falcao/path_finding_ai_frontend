@@ -6,9 +6,14 @@
       <router-link to="/algorithms">Algorithms</router-link>
       <router-link to="/about">About</router-link>
     </div>
-    <div class="license">Matrícula: 12-AB-34</div>
+
+    <LicenseDropdown />
   </nav>
 </template>
+
+<script setup>
+import LicenseDropdown from '../ocr/LicensePlate.vue'
+</script>
 
 <style scoped>
 nav {
