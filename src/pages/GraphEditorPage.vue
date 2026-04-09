@@ -48,6 +48,10 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+
+
 const nodes = ref([])
 const edges = ref([])
 
@@ -77,7 +81,7 @@ function addNode() {
 
   if (!name) return
   if (nodes.value.includes(name)) {
-    alert('Node already exists')
+    toast.add({ severity: 'error', summary: 'Error Message', detail: 'Node already exists', life: 3000 });
     return
   }
 
@@ -89,16 +93,16 @@ function addEdge() {
   if (!edgeSource.value || !edgeTarget.value) return
 
   const exists = edges.value.some(
-    (e) => e.source === edgeSource.value && e.target === edgeTarget.value,
+    (e) => (e.source === edgeSource.value && e.target === edgeTarget.value) || (e.source === edgeTarget.value && e.target === edgeSource.value),
   )
 
   if (exists) {
-    alert('Edge already exists')
+    toast.add({ severity: 'error', summary: 'Error Message', detail: 'Edge already exists', life: 3000 });
     return
   }
 
   if (edgeSource.value === edgeTarget.value) {
-    alert('Source and target cannot be the same')
+    toast.add({ severity: 'error', summary: 'Error Message', detail: 'Source and target nodes must be different', life: 3000 });
     return
   }
 
