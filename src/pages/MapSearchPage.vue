@@ -75,7 +75,6 @@ function handleLoadGraph(newGraph) {
 <style scoped>
 .layout {
   display: flex;
-  gap: 20px;
   height: calc(100vh - 60px);
   overflow: hidden;
 }
@@ -84,6 +83,10 @@ function handleLoadGraph(newGraph) {
   flex: 1;
   padding: 0 20px;
   border-right: 1px solid #ccc;
+
+  scroll-behavior: smooth;
+  overflow-y: auto;
+  height: 100%;
 }
 
 .graph {
