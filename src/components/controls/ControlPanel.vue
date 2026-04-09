@@ -41,7 +41,17 @@
           <input type="radio" value="dls" v-model="algorithm" />
           Depth Limited
         </label>
-        <InputNumber v-model="depth" class="depth-input" :class="{invalid: depthInvalid}" :disabled="algorithm!='dls'" inputId="minmax-buttons" mode="decimal" showButtons :min="1" fluid />
+        <InputNumber
+          v-model="depth"
+          class="depth-input"
+          :class="{ invalid: depthInvalid }"
+          :disabled="algorithm != 'dls'"
+          inputId="minmax-buttons"
+          mode="decimal"
+          showButtons
+          :min="1"
+          fluid
+        />
       </div>
       <label>
         <input type="radio" value="greedy" v-model="algorithm" />
@@ -55,6 +65,15 @@
     </div>
 
     <Button @click="runSearch">Run Search</Button>
+
+    <FileUpload
+      mode="basic"
+      accept=".json,application/json"
+      :auto="false"
+      customUpload
+      @select="handleFileUpload"
+      chooseLabel="Upload JSON"
+    />
   </div>
 </template>
 
@@ -63,6 +82,10 @@ import { ref, watch, computed } from 'vue'
 import Select from 'primevue/select'
 import Button from 'primevue/button'
 import InputNumber from 'primevue/inputnumber'
+import FileUpload from 'primevue/fileupload'
+import { useToast } from 'primevue/usetoast'
+
+const toast = useToast()
 
 const labels = ref([])
 const submitted = ref(false)
@@ -74,7 +97,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['run-search'])
+const emit = defineEmits(['run-search', 'load-graph'])
 
 const startCity = defineModel('startCity')
 const goalCity = defineModel('goalCity')
@@ -84,21 +107,55 @@ const depth = defineModel('depth')
 const depthInvalid = computed(() => submitted.value && algorithm.value === 'dls' && !depth.value)
 const startInvalid = computed(() => submitted.value && !startCity.value)
 const goalInvalid = computed(() => submitted.value && !goalCity.value)
-const sameCity = computed(() =>
-  submitted.value &&
-  startCity.value &&
-  goalCity.value &&
-  startCity.value === goalCity.value
+const sameCity = computed(
+  () => submitted.value && startCity.value && goalCity.value && startCity.value === goalCity.value,
 )
 
 function runSearch() {
   submitted.value = true
 
-  if (!startCity.value || !goalCity.value || startCity.value === goalCity.value || (algorithm.value === 'dls' && !depth.value)) {
+  if (
+    !startCity.value ||
+    !goalCity.value ||
+    startCity.value === goalCity.value ||
+    (algorithm.value === 'dls' && !depth.value)
+  ) {
     return
   }
 
   emit('run-search')
+}
+
+function handleFileUpload(event) {
+  const file = event.files[0]
+  if (!file) return
+
+  const reader = new FileReader()
+
+  reader.onload = (e) => {
+    try {
+      const json = JSON.parse(e.target.result)
+
+      if (!json.elements || !Array.isArray(json.elements)) {
+        throw new Error('Invalid format')
+      }
+
+      // send to parent
+      emit('load-graph', json)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  reader.readAsText(file)
+
+  toast.add({
+  severity: 'success',
+  summary: 'Graph Loaded',
+  detail: 'You can now run searches',
+  life: 3000,
+})
+
 }
 
 watch(
@@ -106,10 +163,12 @@ watch(
   (newElements) => {
     if (!newElements || !newElements.elements?.length) return
 
-    labels.value = newElements.elements.map((n) => ({
-      label: n.data.label,
-      value: n.data.id,
-    }))
+    labels.value = newElements.elements
+      .filter((el) => el.data?.id && !el.data.source)
+      .map((n) => ({
+        label: n.data.label,
+        value: n.data.id,
+      }))
   },
 )
 </script>
@@ -153,5 +212,4 @@ watch(
   color: #e53935;
   font-size: 0.8rem;
 }
-
 </style>
