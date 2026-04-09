@@ -157,5 +157,19 @@ function applyPathStyles() {
 .graph {
   width: 100%;
   height: 100%;
+
+  background-color: #fafafa;
+
+  background-image:
+    linear-gradient(to right, #e5e5e5 1px, transparent 1px),
+    linear-gradient(to bottom, #e5e5e5 1px, transparent 1px),
+    linear-gradient(to right, #f5f5f5 1px, transparent 1px),
+    linear-gradient(to bottom, #f5f5f5 1px, transparent 1px);
+
+  background-size:
+    40px 40px,
+    40px 40px,
+    10px 10px,
+    10px 10px;
 }
 </style>
