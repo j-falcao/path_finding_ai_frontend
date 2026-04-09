@@ -20,3 +20,12 @@ export async function getGraph() {
   if (!response.ok) throw new Error("Failed to fetch graph")
   return response.json() // already cytoscape elements
 }
+
+export async function license_plate(data) {
+  const response = await fetch("http://127.0.0.1:8000/api/ocr/license-plate", {
+    method: "POST",
+    body: data
+  })
+  if (!response.ok) throw new Error("Login failed")
+  return response.json()
+}
