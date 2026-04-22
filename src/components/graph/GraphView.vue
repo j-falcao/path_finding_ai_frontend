@@ -25,18 +25,23 @@ const props = defineProps({
   }
 })
 
+const emit = defineEmits(["delete-node", "delete-edge"])
+
 const cyContainer = ref(null)
 let cy = null
 
 watch(
   () => props.elements,
   (newElements) => {
-    if (!newElements || !newElements.elements?.length) return
+    if (!newElements) return
 
     if (cy) {
       cy.destroy()
       cy = null
     }
+
+    // allow clearing the graph
+    if (!newElements.elements?.length) return
 
     cy = cytoscape({
       container: cyContainer.value,
@@ -91,6 +96,19 @@ watch(
         }
       ],
       layout: { name: "grid" }
+    })
+
+    cy.on("cxttap", "node", (event) => {
+      const nodeId = event.target.id()
+      emit("delete-node", nodeId)
+    })
+
+    cy.on("cxttap", "edge", (event) => {
+      const edge = event.target.data()
+      emit("delete-edge", {
+        source: edge.source,
+        target: edge.target
+      })
     })
 
     // Apply any already-selected cities after rebuild

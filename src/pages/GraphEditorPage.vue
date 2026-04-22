@@ -55,7 +55,12 @@
     </div>
 
     <div class="graph">
-      <GraphView :elements="cy_elements" :path="[]" />
+      <GraphView
+        :elements="cy_elements"
+        :path="[]"
+        @delete-node="deleteNode"
+        @delete-edge="deleteEdge"
+      />
     </div>
   </div>
 </template>
@@ -146,6 +151,40 @@ function addEdge() {
     source: edgeSource.value,
     target: edgeTarget.value,
     weight: edgeWeight.value || 1,
+  })
+}
+
+function deleteNode(nodeId) {
+  // Remove node
+  nodes.value = nodes.value.filter(n => n !== nodeId)
+
+  // Remove all edges connected to it
+  edges.value = edges.value.filter(
+    e => e.source !== nodeId && e.target !== nodeId
+  )
+
+  toast.add({
+    severity: 'info',
+    summary: 'Node removed',
+    detail: nodeId,
+    life: 2000,
+  })
+}
+
+function deleteEdge(edgeToDelete) {
+  edges.value = edges.value.filter(
+    e =>
+      !(
+        (e.source === edgeToDelete.source && e.target === edgeToDelete.target) ||
+        (e.source === edgeToDelete.target && e.target === edgeToDelete.source)
+      )
+  )
+
+  toast.add({
+    severity: 'info',
+    summary: 'Edge removed',
+    detail: `${edgeToDelete.source} → ${edgeToDelete.target}`,
+    life: 2000,
   })
 }
 

@@ -1,5 +1,13 @@
 <template>
-  <div>
+  <div style="padding-top: 20px;">
+    <FileUpload
+      mode="basic"
+      accept=".json,application/json"
+      :auto="false"
+      customUpload
+      @select="handleFileUpload"
+      chooseLabel="Upload JSON"
+    />
     <h3>Control Panel</h3>
     <div class="select-group">
       <div class="select-field">
@@ -66,14 +74,6 @@
 
     <Button @click="runSearch">Run Search</Button>
 
-    <FileUpload
-      mode="basic"
-      accept=".json,application/json"
-      :auto="false"
-      customUpload
-      @select="handleFileUpload"
-      chooseLabel="Upload JSON"
-    />
   </div>
 </template>
 
