@@ -32,7 +32,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getGraph, runSearch } from '../services/api'
+import { getGraph, runSearch, runDefaultMapSearch } from '../services/api'
 import ControlPanel from '../components/controls/ControlPanel.vue'
 import GraphView from '../components/graph/GraphView.vue'
 import SearchResults from '../components/results/SearchResults.vue'
@@ -54,15 +54,20 @@ const path = ref([])
 
 const showAttractions = ref(false)
 
+const usingDefaultMap = ref(true)
+
+
 onMounted(async () => {
   try {
     cy_elements.value = await getGraph()
+    usingDefaultMap.value = true
   } catch (err) {
     console.error(err)
   }
 })
 
 async function handleSearch() {
+
   if (!auth.isLoggedIn) {
     toast.add({
       severity: 'warn',
@@ -76,13 +81,29 @@ async function handleSearch() {
   showAttractions.value = false
 
   try {
-    const response = await runSearch({
-      map_json: cy_elements.value,
-      start: startCity.value,
-      goal: goalCity.value,
-      algorithm: algorithm.value,
-      depth: depth.value,
-    })
+
+    let response
+
+    if (usingDefaultMap.value) {
+
+      response = await runDefaultMapSearch({
+        start: startCity.value,
+        goal: goalCity.value,
+        algorithm: algorithm.value,
+        depth: depth.value
+      })
+
+    } else {
+
+      response = await runSearch({
+        map_json: cy_elements.value,
+        start: startCity.value,
+        goal: goalCity.value,
+        algorithm: algorithm.value,
+        depth: depth.value
+      })
+
+    }
 
     result.value = response
     path.value = response.path
@@ -90,13 +111,16 @@ async function handleSearch() {
     if (path.value?.length) {
       showAttractions.value = true
     }
+
   } catch (err) {
     console.error(err)
   }
 }
 
+
 function handleLoadGraph(newGraph) {
   cy_elements.value = newGraph
+  usingDefaultMap.value = false
   startCity.value = null
   goalCity.value = null
   path.value = []

@@ -15,6 +15,23 @@ export async function runSearch(data) {
   return await response.json()
 }
 
+export async function runDefaultMapSearch(data) {
+
+  const response = await fetch("http://127.0.0.1:8000/api/defaultMapSearch", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+
+  if (!response.ok) {
+    throw new Error("Search failed")
+  }
+
+  return await response.json()
+}
+
 export async function getGraph() {
   const response = await fetch("http://127.0.0.1:8000/api/graph")
   if (!response.ok) throw new Error("Failed to fetch graph")
